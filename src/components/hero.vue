@@ -1,14 +1,14 @@
 <script setup>
-import { defineProps } from 'vue';
+import { ref } from 'vue';
 
-
+const showNewTaskPopup = ref(false);
 
 </script>
 
 <template>
   <section class="bg-white mb-4 min-h-screen flex flex-row">
     <!-- First horizontal section  -->
-    <div class="flex flex-col justify-start items-center bg-white shadow-lg w-24 p-4">
+    <div class="flex flex-col justify-start items-center bg-white shadow-lg w-24 p-5">
       <div class="flex flex-col gap-6 items-center">
       <div class="flex flex-col items-center">
         <button class="icon-btn group rounded-full p-2 transition-colors duration-200 hover:bg-blue-100">
@@ -74,21 +74,162 @@ import { defineProps } from 'vue';
     </div>
       </div>
     <!-- Second horizontal section -->
+    
     <div class="flex flex-col items-start" style="width: 268px;">
       <div class="mt-6  w-full flex justify-start">
   <button
-    class="w-[268px] h-[38px] py-2 px-3 rounded bg-[#006699] text-white text-sm font-medium hover:bg-blue-800 transition-colors duration-200"
-  >
-  <span class="flex items-center justify-center w-full">
-    <svg class="mr-2" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    class="w-[268px] h-[38px] py-2 px-3 rounded bg-[#006699] text-white text-sm font-medium hover:bg-[#35ace7] transition-colors duration-200"
+    @click="showNewTaskPopup = true"
+    >
+    <span class="flex items-center justify-center w-full">
+      <svg class="mr-2" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10.8333 3.33333C10.8333 2.8731 10.4602 2.5 10 2.5C9.53976 2.5 9.16667 2.8731 9.16667 3.33333V9.16667H3.33333C2.8731 9.16667 2.5 9.53976 2.5 10C2.5 10.4602 2.8731 10.8333 3.33333 10.8333H9.16667V16.6667C9.16667 17.1269 9.53976 17.5 10 17.5C10.4602 17.5 10.8333 17.1269 10.8333 16.6667V10.8333H16.6667C17.1269 10.8333 17.5 10.4602 17.5 10C17.5 9.53976 17.1269 9.16667 16.6667 9.16667H10.8333V3.33333Z" fill="white"/>
-    </svg>
-    New Task
-  </span>
-  </button>
+      </svg>
+      New Task
+    </span>
+    </button>
+
+    <teleport to="body">
+      <div
+      v-if="showNewTaskPopup"
+      class="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-30"
+      style="padding: 40px;"
+      >
+      <div
+        class="relative bg-white rounded shadow-lg"
+        style="
+        max-width: 90vw;
+        max-height: 90vh;
+        width: 1022px;
+        height: 702px;
+        padding: 24px 12px;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        "
+      >
+        <button
+        class="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        @click="showNewTaskPopup = false"
+        >
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-linecap="round"/>
+          <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-linecap="round"/>
+        </svg>
+        </button>
+        <!-- Popup content  -->
+        <div class="flex-1 flex flex-col">
+          <div
+            class="absolute top-6 left-6 mb-6"
+            style="
+              font-family: Inter, sans-serif;
+              font-weight: 600;
+              font-size: 24px;
+              line-height: 120%;
+              letter-spacing: 0;
+              vertical-align: middle;
+              color: #1a202c;
+            "
+          >
+            New Task
+          </div>
+          <section
+            class="mt-10"
+            style="width: 998px; height: 601px; background: #f9fafb; border-radius: 12px;"
+          >
+            <div style="display: flex; flex-direction: row; width: 100%; height: 100%;">
+              <!-- Left Section -->
+              <div
+                style="
+                  width: 499px;
+                  height: 601px;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  padding-top: 24px;
+                  padding-right: 24px;
+                  padding-left: 24px;
+                  box-sizing: border-box;
+                "
+              >
+                <div>
+                  <label
+                    for="task-title"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                    style="font-family: Inter, sans-serif;"
+                  >
+                    Task Title
+                  </label>
+                  <input
+                    id="task-title"
+                    type="text"
+                    v-model="taskTitle"
+                    placeholder="Enter task title"
+                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  />
+                  <div>
+                  <label
+                  for="assigned-to"
+                  class="block text-sm font-medium text-gray-700  mt-5"
+                  style="font-family: Inter, sans-serif;"
+                  >
+                  Assigned To
+                  </label>
+                  <input
+                  id="assigned-to"
+                  type="email"
+                  v-model="assignedTo"
+                  placeholder="Enter an email"
+                  class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 "
+                  />
+                </div>
+                <div class="mt-5">
+                  <label
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  style="font-family: Inter, sans-serif;"
+                  >
+                  Date To
+                  </label>
+                  <div class="flex items-center gap-2">
+                  <input
+                    type="date"
+                    v-model="startDate"
+                    class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  />
+                  <span class="text-gray-500">to</span>
+                  <input
+                    type="date"
+                    v-model="endDate"
+                    class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  />
+                  </div>
+                </div>
+                </div>
+                
+              </div>
+              <!-- Right Section -->
+              <div
+                style="
+                  width: 499px;
+                  height: 601px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 24px;
+                  padding: 24px;
+                  box-sizing: border-box;
+                "
+              >
+                <!-- Right section content here -->
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-      <div class="flex items-center justify-between mb-4 bg-white rounded" style="width: 268px; height: 48px;">
-      <span class="text-gray-700 font-medium-inter text-base">Task</span>
+      </div>
+    </teleport>
+      </div>
+      <div class="flex items-center justify-between  bg-white rounded" style="width: 268px; height: 48px;">
+      <span class="text-gray-700 ml-5 font-medium-inter text-base leading-[1.4]">Task</span>
       <button class="flex items-center gap-2 ml-4 p-2 rounded hover:bg-gray-100 transition-colors">
       </button>
       <div class="flex items-center ml-2 space-x-2">
@@ -106,6 +247,31 @@ import { defineProps } from 'vue';
         </button>
       </div>
       </div>
+      <button
+      class="w-[268px] h-12 px-4 py-3  flex items-center gap-2 rounded bg-[#EAF0F4] text-gray-800 text-base font-medium hover:bg-gray-200 transition-colors duration-200"
+      style="padding-top: 12px; padding-right: 16px; padding-bottom: 12px; padding-left: 16px; gap: 8px;"
+    >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19.5 3.75H4.5C4.08579 3.75 3.75 4.08579 3.75 4.5V19.5C3.75 19.9142 4.08579 20.25 4.5 20.25H19.5C19.9142 20.25 20.25 19.9142 20.25 19.5V4.5C20.25 4.08579 19.9142 3.75 19.5 3.75Z" stroke="#00141F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M16.5 2.25V5.25" stroke="#00141F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M7.5 2.25V5.25" stroke="#00141F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3.75 8.25H20.25" stroke="#00141F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+      All Task
+    </button>
+
+    <button
+      class="w-[268px] h-12 px-4 py-3  flex items-center gap-2 rounded bg-white text-gray-800 text-base font-medium hover:bg-gray-200 transition-colors duration-200"
+      style="padding-top: 12px; padding-right: 16px; padding-bottom: 12px; padding-left: 16px; gap: 8px;"
+    >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.3344 19.5H3.69375C3.60265 19.5 3.51243 19.4821 3.42826 19.4472C3.34409 19.4123 3.26762 19.3612 3.20319 19.2968C3.13877 19.2324 3.08767 19.1559 3.05281 19.0717C3.01794 18.9876 3 18.8974 3 18.8063V7.5H20.25C20.4489 7.5 20.6397 7.57902 20.7803 7.71967C20.921 7.86032 21 8.05109 21 8.25V18.8344C21 19.0109 20.9299 19.1802 20.805 19.305C20.6802 19.4299 20.5109 19.5 20.3344 19.5Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 7.5V5.25C3 5.05109 3.07902 4.86033 3.21967 4.71967C3.36032 4.57902 3.55109 4.5 3.75 4.5H8.69062C8.78801 4.49966 8.88451 4.51853 8.9746 4.55553C9.06469 4.59253 9.14659 4.64694 9.21563 4.71563L12 7.5" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+      Lopworks
+    </button>
     </div>
     <!-- Third horizontal section -->
     <div

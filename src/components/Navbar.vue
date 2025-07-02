@@ -6,12 +6,12 @@ import logo from '@/assets/img/ration trans logo.png';
     <nav class="bg-white border-b border-white">
       <div class="w-1440px h-112px pt-8 pr-10 pb-6 pl-10 border-b border-gray-300 flex gap-2.5">
         
-    <img class="h-8 w-29 object-contain" :src="logo" alt="Ration" />
+    <img class="h-8 w-29 absolute top-3 object-contain" :src="logo" alt="Ration" />
   
   <div class="flex-1"></div>
     </div>
     
-    <div class="absolute top-6 right-10 flex items-center">
+    <div class="absolute top-1 right-10 flex items-center">
       <button
         class="flex items-center text-white rounded-full px-4 py-2 focus:outline-none"
       >
