@@ -1,7 +1,58 @@
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
+import type { TabPaneName } from 'element-plus'
+
+let tabIndex = 2
+const editableTabsValue = ref('2')
+const taskTitle = ref('')
+const assignedTo = ref('')
+const startDate = ref('') 
+const endDate = ref('')
+const priority = ref('')
+const group = ref('')
+const search = ref('')
+const editableTabs = ref([
+  {
+    title: 'Tab 1',
+    name: '1',
+    
+  },
+  {
+    title: 'Tab 2',
+    name: '2',
+  
+  },
+])
+
+const addTab = (targetName: string) => {
+  const newTabName = `${++tabIndex}`
+  editableTabs.value.push({
+    title: 'New Tab',
+    name: newTabName,
+
+  })
+  editableTabsValue.value = newTabName
+}
+const removeTab = (targetName: TabPaneName) => {
+  const tabs = editableTabs.value
+  let activeName = editableTabsValue.value
+  if (activeName === targetName) {
+    tabs.forEach((tab, index) => {
+      if (tab.name === targetName) {
+        const nextTab = tabs[index + 1] || tabs[index - 1]
+        if (nextTab) {
+          activeName = nextTab.name
+        }
+      }
+    })
+  }
+
+  editableTabsValue.value = activeName
+  editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
+}
 
 const showNewTaskPopup = ref(false);
+
 
 </script>
 
@@ -165,7 +216,7 @@ const showNewTaskPopup = ref(false);
                     type="text"
                     v-model="taskTitle"
                     placeholder="Enter task title"
-                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    class="w-full h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                   />
                   <div>
                   <label
@@ -180,7 +231,7 @@ const showNewTaskPopup = ref(false);
                   type="email"
                   v-model="assignedTo"
                   placeholder="Enter an email"
-                  class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 "
+                  class="w-full h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 "
                   />
                 </div>
                 <div class="mt-5">
@@ -194,20 +245,139 @@ const showNewTaskPopup = ref(false);
                   <input
                     type="date"
                     v-model="startDate"
-                    class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    class="h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                   />
                   <span class="text-gray-500">to</span>
                   <input
                     type="date"
                     v-model="endDate"
-                    class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    class="h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                   />
+                  
+                  </div>
+                  
+                </div>
+                <div class="flex flex-row gap-4 mt-5">
+                  <div class="flex flex-col flex-1">
+                    <label
+                      for="priority"
+                      class="block text-sm font-medium text-gray-700 mb-2"
+                      style="font-family: Inter, sans-serif;"
+                    >
+                      Priority
+                    </label>
+                    <select
+                      id="priority"
+                      v-model="priority"
+                      class="h-9 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    >
+                      <option value="high">High</option>
+                      <option value="medium">Medium</option>
+                      <option value="low">Low</option>
+                    </select>
+                  </div>
+                  <div class="flex flex-col flex-1">
+                    <label
+                      for="group"
+                      class="block text-sm font-medium text-gray-700 mb-2"
+                      style="font-family: Inter, sans-serif;"
+                    >
+                      Group
+                    </label>
+                    <select
+                      id="group"
+                      v-model="group"
+                      class="h-9 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    >
+                      <option value="" disabled>Select group</option>
+                      <option value="">Lopworks</option>
+                      <option value=""></option>
+                      <option value=""></option>
+                      <option value=""></option>
+                      <option value=""></option>
+                    </select>
                   </div>
                 </div>
-                </div>
-                
+                <div class="w-full max-w-3xl">
+    <!-- Label -->
+    <label class="block mb-2 font-medium text-gray-900 text-base">Description</label>
+
+    <!-- Toolbar -->
+    <div class="border border-gray-300 rounded-t bg-gray-50 px-2 py-2 flex flex-wrap items-center gap-2">
+      <!-- Left side -->
+      <button class="hover:bg-gray-200 p-1 rounded text-gray-700"><i class="icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.1225 5.81841L6.87983 10.061C6.58693 10.3539 6.58693 10.8288 6.87983 11.1217C7.17272 11.4146 7.6476 11.4146 7.94048 11.1217L12.1832 6.87907C13.0618 6.0004 13.0618 4.57578 12.1832 3.69709C11.3045 2.81841 9.87983 2.81841 9.00113 3.69709L4.7585 7.93974C3.29404 9.40419 3.29404 11.7785 4.7585 13.2431C6.22297 14.7075 8.59733 14.7075 10.0618 13.2431L14.3045 9.00039L15.3651 10.061L11.1225 14.3037C9.07223 16.3539 5.7481 16.3539 3.69785 14.3037C1.64759 12.2534 1.64759 8.92936 3.69785 6.87907L7.94048 2.63643C9.40493 1.17197 11.7794 1.17197 13.2438 2.63643C14.7083 4.1009 14.7083 6.47526 13.2438 7.93974L9.00113 12.1824C8.1225 13.061 6.69785 13.061 5.81917 12.1824C4.94048 11.3037 4.94048 9.87909 5.81917 9.00039L10.0618 4.75776L11.1225 5.81841Z" fill="#1F2937"/>
+</svg>
+</i></button>
+      <button class="font-bold hover:bg-gray-200 p-1 rounded text-gray-700">B</button>
+      <button class="italic hover:bg-gray-200 p-1 rounded text-gray-700">I</button>
+      <button class="underline hover:bg-gray-200 p-1 rounded text-gray-700">U</button>
+
+      <!-- Font family dropdown -->
+      <select class="text-sm px-2 border-none bg-transparent focus:outline-none text-gray-700">
+        <option>Font family</option>
+        <option>Inter</option>
+        <option>Arial</option>
+        <option>Georgia</option>
+      </select>
+
+      <!-- Spacer -->
+      <div class="flex-grow"></div>
+
+      <!-- Alignment + list + undo/redo -->
+      <div class="flex items-center gap-2">
+        <button class="hover:bg-gray-200 p-1 rounded text-gray-700"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.875 9H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7.875 4.5H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.8125 13.5H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5.0625 3.9375L2.25 6.75L5.0625 9.5625" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+        <button class="hover:bg-gray-200 p-1 rounded text-gray-700"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.875 9H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7.875 4.5H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.8125 13.5H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.8125 3.9375L5.625 6.75L2.8125 9.5625" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+        <button class="hover:bg-gray-200 p-1 rounded text-gray-700"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.3125 9H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7.3125 4.5H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7.3125 13.5H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.8125 4.21875L3.9375 3.65625V7.59375" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.88984 10.73C2.94168 10.6017 3.01999 10.4857 3.11968 10.3897C3.21938 10.2936 3.3382 10.2197 3.46839 10.1727C3.59859 10.1257 3.73723 10.1067 3.87527 10.1169C4.01331 10.1272 4.14764 10.1664 4.2695 10.232C4.39135 10.2977 4.498 10.3883 4.58246 10.498C4.66692 10.6076 4.72731 10.7339 4.75968 10.8684C4.79205 11.003 4.79567 11.1429 4.77031 11.279C4.74495 11.4151 4.69117 11.5443 4.6125 11.6581L2.8125 14.0628H4.78125" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+        <button class="hover:bg-gray-200 p-1 rounded text-gray-700"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.1875 4.5H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.1875 9H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.1875 13.5H15.1875" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.09375 5.20312C3.48208 5.20312 3.79688 4.88833 3.79688 4.5C3.79688 4.11167 3.48208 3.79688 3.09375 3.79688C2.70542 3.79688 2.39062 4.11167 2.39062 4.5C2.39062 4.88833 2.70542 5.20312 3.09375 5.20312Z" fill="#131313"/>
+<path d="M3.09375 14.2031C3.48208 14.2031 3.79688 13.8883 3.79688 13.5C3.79688 13.1117 3.48208 12.7969 3.09375 12.7969C2.70542 12.7969 2.39062 13.1117 2.39062 13.5C2.39062 13.8883 2.70542 14.2031 3.09375 14.2031Z" fill="#131313"/>
+<path d="M3.09375 9.70312C3.48208 9.70312 3.79688 9.38833 3.79688 9C3.79688 8.61167 3.48208 8.29688 3.09375 8.29688C2.70542 8.29688 2.39062 8.61167 2.39062 9C2.39062 9.38833 2.70542 9.70312 3.09375 9.70312Z" fill="#131313"/>
+</svg>
+</button>
+        <button class="hover:bg-gray-200 p-1 rounded text-gray-700"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.5234 10.4131H16.0234V5.91309" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.25 12.9371C2.24951 11.6017 2.64512 10.2962 3.38679 9.18566C4.12845 8.07517 5.18284 7.20962 6.41655 6.69853C7.65026 6.18743 9.00785 6.05375 10.3175 6.31441C11.6272 6.57507 12.8302 7.21834 13.7742 8.16285L16.0242 10.4129" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+        <button class="hover:bg-gray-200 p-1 rounded text-gray-700"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.47656 10.4131H1.97656V5.91309" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.7508 12.9371C15.7513 11.6017 15.3557 10.2962 14.614 9.18566C13.8723 8.07517 12.8179 7.20962 11.5842 6.69853C10.3505 6.18743 8.99294 6.05375 7.68324 6.31441C6.37353 6.57507 5.17058 7.21834 4.22656 8.16285L1.97656 10.4129" stroke="#131313" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div
+      contenteditable="true"
+      class="min-h-[130px] bg-gray-50 border border-t-0 border-gray-300 rounded-b p-3 text-sm focus:outline-none"
+    ></div>
+  </div>
               </div>
-              <!-- Right Section -->
+              </div>              <!-- Right Section -->
               <div
                 style="
                   width: 499px;
@@ -220,6 +390,71 @@ const showNewTaskPopup = ref(false);
                 "
               >
                 <!-- Right section content here -->
+                <div class="max-w-md w-full space-y-2">
+    <!-- Heading -->
+    <h2 class="text-xl font-semibold text-gray-900">Meeting</h2>
+
+    <!-- Detail Box -->
+    <div class=" rounded p-4 space-y-4">
+      <div class="flex items-start gap-3">
+        <span><svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4.83268 2.49967V0.833008H6.49935V2.49967H11.4993V0.833008H13.166V2.49967H16.4993C16.9596 2.49967 17.3327 2.87277 17.3327 3.33301V7.49967H15.666V4.16634H13.166V5.83301H11.4993V4.16634H6.49935V5.83301H4.83268V4.16634H2.33268V15.833H7.33268V17.4997H1.49935C1.03912 17.4997 0.666016 17.1266 0.666016 16.6663V3.33301C0.666016 2.87277 1.03912 2.49967 1.49935 2.49967H4.83268ZM13.166 9.99967C11.3251 9.99967 9.83268 11.4921 9.83268 13.333C9.83268 15.1739 11.3251 16.6663 13.166 16.6663C15.0069 16.6663 16.4993 15.1739 16.4993 13.333C16.4993 11.4921 15.0069 9.99967 13.166 9.99967ZM8.16602 13.333C8.16602 10.5716 10.4046 8.33301 13.166 8.33301C15.9274 8.33301 18.166 10.5716 18.166 13.333C18.166 16.0944 15.9274 18.333 13.166 18.333C10.4046 18.333 8.16602 16.0944 8.16602 13.333ZM12.3327 10.833V13.6782L14.2434 15.5889L15.4219 14.4104L13.9993 12.9878V10.833H12.3327Z" fill="#616161"/>
+</svg>
+</span>
+        <p class="text-gray-800">Due Wed, April 9th</p>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16.9453 16.25H3.07813C3.0022 16.25 2.92703 16.235 2.85689 16.206C2.78674 16.1769 2.72301 16.1344 2.66933 16.0807C2.61564 16.027 2.57306 15.9633 2.54401 15.8931C2.51495 15.823 2.5 15.7478 2.5 15.6719V6.25H16.875C17.0408 6.25 17.1997 6.31585 17.3169 6.43306C17.4342 6.55027 17.5 6.70924 17.5 6.875V15.6953C17.5 15.8424 17.4416 15.9835 17.3375 16.0875C17.2335 16.1916 17.0924 16.25 16.9453 16.25Z" stroke="#616161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.5 6.25V4.375C2.5 4.20924 2.56585 4.05027 2.68306 3.93306C2.80027 3.81585 2.95924 3.75 3.125 3.75H7.24219C7.32334 3.74972 7.40376 3.76544 7.47883 3.79628C7.5539 3.82711 7.62216 3.87245 7.67969 3.92969L10 6.25" stroke="#616161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span>
+        <p class="text-gray-800">Lopworks</p>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span class="text-yellow-500"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3.125 16.875V3.75" stroke="#FFBF00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.125 13.1245C8.125 9.37452 11.875 16.8745 16.875 13.1245V3.74952C11.875 7.49952 8.125 -0.000476077 3.125 3.74952" stroke="#FFBF00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span>
+        <p class="text-gray-800">Medium</p>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10 5.625V10H14.375" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 16.875C13.797 16.875 16.875 13.797 16.875 10C16.875 6.20304 13.797 3.125 10 3.125C6.20304 3.125 3.125 6.20304 3.125 10C3.125 13.797 6.20304 16.875 10 16.875Z" stroke="#616161" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M15.3047 2.04688L17.9531 4.69531" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.04688 4.69531L4.69531 2.04688" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span>
+        <p class="text-gray-800">15 minutes before</p>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.625 6.875L17.5 5L15.625 3.125" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.5 10C2.50207 8.67455 3.02951 7.40398 3.96675 6.46675C4.90398 5.52951 6.17455 5.00207 7.5 5H17.5" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.375 13.125L2.5 15L4.375 16.875" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.5 10C17.4979 11.3254 16.9705 12.596 16.0333 13.5333C15.096 14.4705 13.8254 14.9979 12.5 15H2.5" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span>
+        <p class="text-gray-800">Daily</p>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.25 3H15.75V4.5H2.25V3ZM2.25 14.25H15.75V15.75H2.25V14.25ZM2.25 10.5H15.75V12H2.25V10.5ZM2.25 6.75H15.75V8.25H2.25V6.75Z" fill="#616161"/>
+</svg>
+</span>
+        <p class="text-gray-800">
+          Deadline for submitting the Q1 financial report. Ensure all data is finalized.
+        </p>
+      </div>
+    </div>
+  </div>
               </div>
             </div>
           </section>
@@ -248,7 +483,7 @@ const showNewTaskPopup = ref(false);
       </div>
       </div>
       <button
-      class="w-[268px] h-12 px-4 py-3  flex items-center gap-2 rounded bg-[#EAF0F4] text-gray-800 text-base font-medium hover:bg-gray-200 transition-colors duration-200"
+      class="w-[268px] h-12 px-4 py-3  flex items-center gap-2 rounded bg-[#EAF0F4] text-gray-800 text-base font-medium hover:bg-gray-200 transition-colors duration-200 shadow-lg"
       style="padding-top: 12px; padding-right: 16px; padding-bottom: 12px; padding-left: 16px; gap: 8px;"
     >
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -260,6 +495,7 @@ const showNewTaskPopup = ref(false);
 
       All Task
     </button>
+    
 
     <button
       class="w-[268px] h-12 px-4 py-3  flex items-center gap-2 rounded bg-white text-gray-800 text-base font-medium hover:bg-gray-200 transition-colors duration-200"
@@ -297,21 +533,30 @@ const showNewTaskPopup = ref(false);
       </div>
     </div>
     <!-- Fourth horizontal section -->
-    <div class="bg-gray-50 w-[673px] h-[942px] pt-6 pb-6 flex flex-col gap-3 relative">
-      <div class="flex justify-start items-center mb-2 pl-6">
-      <button class="w-24 h-6 flex items-start justify-start rounded hover:bg-gray-200 transition-colors" aria-label="Close">
-      <svg width="66" height="13" viewBox="0 0 66 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1.88636 12H0.409091L4.68182 0.363636H6.13636L10.4091 12H8.93182L5.45455 2.20455H5.36364L1.88636 12ZM2.43182 7.45455H8.38636V8.70455H2.43182V7.45455ZM13.3807 0.363636V12H12.0398V0.363636H13.3807ZM17.1776 0.363636V12H15.8366V0.363636H17.1776ZM23.679 1.61364V0.363636H32.4062V1.61364H28.7472V12H27.3381V1.61364H23.679ZM35.7798 12.2045C35.2268 12.2045 34.7249 12.1004 34.2741 11.892C33.8234 11.6799 33.4654 11.375 33.2003 10.9773C32.9351 10.5758 32.8026 10.0909 32.8026 9.52273C32.8026 9.02273 32.901 8.61742 33.098 8.30682C33.295 7.99242 33.5582 7.74621 33.8878 7.56818C34.2173 7.39015 34.581 7.25758 34.9787 7.17045C35.3802 7.07955 35.7836 7.00758 36.1889 6.95455C36.7192 6.88636 37.1491 6.83523 37.4787 6.80114C37.812 6.76326 38.0545 6.70076 38.206 6.61364C38.3613 6.52652 38.4389 6.375 38.4389 6.15909V6.11364C38.4389 5.55303 38.2855 5.11742 37.9787 4.80682C37.6757 4.49621 37.2154 4.34091 36.598 4.34091C35.9579 4.34091 35.456 4.48106 35.0923 4.76136C34.7287 5.04167 34.473 5.34091 34.3253 5.65909L33.0526 5.20455C33.2798 4.67424 33.5829 4.26136 33.9616 3.96591C34.3442 3.66667 34.7609 3.45833 35.2116 3.34091C35.6662 3.2197 36.1132 3.15909 36.5526 3.15909C36.8329 3.15909 37.1548 3.19318 37.5185 3.26136C37.8859 3.32576 38.2401 3.46023 38.581 3.66477C38.9257 3.86932 39.2116 4.17803 39.4389 4.59091C39.6662 5.00379 39.7798 5.55682 39.7798 6.25V12H38.4389V10.8182H38.3707C38.2798 11.0076 38.1283 11.2102 37.9162 11.4261C37.7041 11.642 37.4219 11.8258 37.0696 11.9773C36.7173 12.1288 36.2874 12.2045 35.7798 12.2045ZM35.9844 11C36.5147 11 36.9616 10.8958 37.3253 10.6875C37.6927 10.4792 37.9692 10.2102 38.1548 9.88068C38.3442 9.55114 38.4389 9.20455 38.4389 8.84091V7.61364C38.3821 7.68182 38.2571 7.74432 38.0639 7.80114C37.8745 7.85417 37.6548 7.90151 37.4048 7.94318C37.1586 7.98106 36.9181 8.01515 36.6832 8.04545C36.4522 8.07197 36.2647 8.0947 36.1207 8.11364C35.7723 8.15909 35.4465 8.23295 35.1435 8.33523C34.8442 8.43371 34.6018 8.58333 34.4162 8.78409C34.2344 8.98106 34.1435 9.25 34.1435 9.59091C34.1435 10.0568 34.3158 10.4091 34.6605 10.6477C35.009 10.8826 35.4503 11 35.9844 11ZM48.4091 5.22727L47.2045 5.56818C47.1288 5.36742 47.017 5.17235 46.8693 4.98295C46.7254 4.78977 46.5284 4.63068 46.2784 4.50568C46.0284 4.38068 45.7083 4.31818 45.3182 4.31818C44.7841 4.31818 44.339 4.44129 43.983 4.6875C43.6307 4.92992 43.4545 5.23864 43.4545 5.61364C43.4545 5.94697 43.5758 6.21023 43.8182 6.40341C44.0606 6.59659 44.4394 6.75758 44.9545 6.88636L46.25 7.20455C47.0303 7.39394 47.6117 7.68371 47.9943 8.07386C48.3769 8.46023 48.5682 8.95833 48.5682 9.56818C48.5682 10.0682 48.4242 10.5152 48.1364 10.9091C47.8523 11.303 47.4545 11.6136 46.9432 11.8409C46.4318 12.0682 45.8371 12.1818 45.1591 12.1818C44.2689 12.1818 43.5322 11.9886 42.9489 11.6023C42.3655 11.2159 41.9962 10.6515 41.8409 9.90909L43.1136 9.59091C43.2348 10.0606 43.464 10.4129 43.8011 10.6477C44.142 10.8826 44.5871 11 45.1364 11C45.7614 11 46.2576 10.8674 46.625 10.6023C46.9962 10.3333 47.1818 10.0114 47.1818 9.63636C47.1818 9.33333 47.0758 9.07955 46.8636 8.875C46.6515 8.66667 46.3258 8.51136 45.8864 8.40909L44.4318 8.06818C43.6326 7.87879 43.0455 7.58523 42.6705 7.1875C42.2992 6.78598 42.1136 6.28409 42.1136 5.68182C42.1136 5.18939 42.2519 4.75379 42.5284 4.375C42.8087 3.99621 43.1894 3.69886 43.6705 3.48295C44.1553 3.26705 44.7045 3.15909 45.3182 3.15909C46.1818 3.15909 46.8598 3.34848 47.3523 3.72727C47.8485 4.10606 48.2008 4.60606 48.4091 5.22727ZM51.8366 8.81818L51.8139 7.15909H52.0866L55.9048 3.27273H57.5639L53.4957 7.38636H53.3821L51.8366 8.81818ZM50.5866 12V0.363636H51.9276V12H50.5866ZM56.1321 12L52.723 7.68182L53.6776 6.75L57.8366 12H56.1321ZM65.4716 5.22727L64.267 5.56818C64.1913 5.36742 64.0795 5.17235 63.9318 4.98295C63.7879 4.78977 63.5909 4.63068 63.3409 4.50568C63.0909 4.38068 62.7708 4.31818 62.3807 4.31818C61.8466 4.31818 61.4015 4.44129 61.0455 4.6875C60.6932 4.92992 60.517 5.23864 60.517 5.61364C60.517 5.94697 60.6383 6.21023 60.8807 6.40341C61.1231 6.59659 61.5019 6.75758 62.017 6.88636L63.3125 7.20455C64.0928 7.39394 64.6742 7.68371 65.0568 8.07386C65.4394 8.46023 65.6307 8.95833 65.6307 9.56818C65.6307 10.0682 65.4867 10.5152 65.1989 10.9091C64.9148 11.303 64.517 11.6136 64.0057 11.8409C63.4943 12.0682 62.8996 12.1818 62.2216 12.1818C61.3314 12.1818 60.5947 11.9886 60.0114 11.6023C59.428 11.2159 59.0587 10.6515 58.9034 9.90909L60.1761 9.59091C60.2973 10.0606 60.5265 10.4129 60.8636 10.6477C61.2045 10.8826 61.6496 11 62.1989 11C62.8239 11 63.3201 10.8674 63.6875 10.6023C64.0587 10.3333 64.2443 10.0114 64.2443 9.63636C64.2443 9.33333 64.1383 9.07955 63.9261 8.875C63.714 8.66667 63.3883 8.51136 62.9489 8.40909L61.4943 8.06818C60.6951 7.87879 60.108 7.58523 59.733 7.1875C59.3617 6.78598 59.1761 6.28409 59.1761 5.68182C59.1761 5.18939 59.3144 4.75379 59.5909 4.375C59.8712 3.99621 60.2519 3.69886 60.733 3.48295C61.2178 3.26705 61.767 3.15909 62.3807 3.15909C63.2443 3.15909 63.9223 3.34848 64.4148 3.72727C64.911 4.10606 65.2633 4.60606 65.4716 5.22727Z" fill="#006699"/>
-      </svg>
-      <span class="mx-1"></span>
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M6.9997 5.5865L11.9495 0.636719L13.3637 2.05093L8.4139 7.0007L13.3637 11.9504L11.9495 13.3646L6.9997 8.4149L2.04996 13.3646L0.635742 11.9504L5.5855 7.0007L0.635742 2.05093L2.04996 0.636719L6.9997 5.5865Z" fill="#006699"/>
-      </svg>
-      </button>
-      <span class="text-gray-700 text-sm font-inter"></span>
-      </div>
-     
+
+    
+  
+    <div class="bg-gray-50 flex flex-col py-6">
+      <el-tabs
+      v-model="editableTabsValue"
+      type="card"
+      class="demo-tabs"
+      closable
+      @tab-remove="removeTab"
+    >
+      <el-tab-pane
+        v-for="item in editableTabs"
+        :key="item.name"
+        :label="item.title"
+        :name="item.name"
+      >
+      </el-tab-pane>
+    </el-tabs>
     </div>
+    
+  
+
+     
     <!-- Extra section -->
     <div class="bg-gray-50 flex-1 w-full"></div>
 
