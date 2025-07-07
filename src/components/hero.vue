@@ -13,7 +13,7 @@ const group = ref('')
 const search = ref('')
 const editableTabs = ref([
   {
-    title: 'Tab 1',
+    title: 'All tasks',
     name: '1',
     
   },
@@ -52,6 +52,9 @@ const removeTab = (targetName: TabPaneName) => {
 }
 
 const showNewTaskPopup = ref(false);
+
+
+
 
 
 </script>
@@ -372,9 +375,22 @@ const showNewTaskPopup = ref(false);
 
     <!-- Editor -->
     <div
-      contenteditable="true"
-      class="min-h-[130px] bg-gray-50 border border-t-0 border-gray-300 rounded-b p-3 text-sm focus:outline-none"
+     
+      class="min-h-[130px] bg-gray-50 border border-t-0 border-gray-300  p-3 text-sm focus:outline-none"
     ></div>
+    <div class=" flex justify-start space-x-2 mt-4">
+  <button
+    class="w-28 h-10 px-4 py-2  bg-gray-200 text-gray-800 hover:bg-gray-300 transition"
+  >
+    Cancel
+  </button>
+  <button
+    class="w-28 h-10 px-4 py-2 bg-blue-600 text-white  hover:bg-blue-700 transition"
+  >
+    Create
+  </button>
+</div>
+
   </div>
               </div>
               </div>              <!-- Right Section -->
@@ -389,6 +405,8 @@ const showNewTaskPopup = ref(false);
                   box-sizing: border-box;
                 "
               >
+
+              
                 <!-- Right section content here -->
                 <div class="max-w-md w-full space-y-2">
     <!-- Heading -->
