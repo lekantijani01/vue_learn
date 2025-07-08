@@ -11,6 +11,7 @@ const endDate = ref('')
 const priority = ref('')
 const group = ref('')
 const search = ref('')
+const allDay = ref(false)
 const editableTabs = ref([
   {
     title: 'All tasks',
@@ -54,7 +55,41 @@ const removeTab = (targetName: TabPaneName) => {
 const showNewTaskPopup = ref(false);
 
 
+const value1 = ref<[Date, Date]>([
+  new Date(2000, 10, 10, 10, 10),
+  new Date(2000, 10, 11, 10, 10),
+])
+const value2 = ref('')
 
+const shortcuts = [
+  {
+    text: 'Last week',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setDate(start.getDate() - 7)
+      return [start, end]
+    },
+  },
+  {
+    text: 'Last month',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setMonth(start.getMonth() - 1)
+      return [start, end]
+    },
+  },
+  {
+    text: 'Last 3 months',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setMonth(start.getMonth() - 3)
+      return [start, end]
+    },
+  },
+]
 
 
 </script>
@@ -191,7 +226,7 @@ const showNewTaskPopup = ref(false);
             class="mt-10"
             style="width: 998px; height: 601px; background: #f9fafb; border-radius: 12px;"
           >
-            <div style="display: flex; flex-direction: row; width: 100%; height: 100%;">
+            <div style="display: flex; flex-direction: row; width: 100%; height: 100%;" >
               <!-- Left Section -->
               <div
                 style="
@@ -222,44 +257,85 @@ const showNewTaskPopup = ref(false);
                     class="w-full h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                   />
                   <div>
-                  <label
-                  for="assigned-to"
-                  class="block text-sm font-medium text-gray-700  mt-5"
-                  style="font-family: Inter, sans-serif;"
-                  >
-                  Assigned To
-                  </label>
-                  <input
-                  id="assigned-to"
-                  type="email"
-                  v-model="assignedTo"
-                  placeholder="Enter an email"
-                  class="w-full h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 "
-                  />
-                </div>
-                <div class="mt-5">
-                  <label
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                  style="font-family: Inter, sans-serif;"
-                  >
-                  Date To
-                  </label>
-                  <div class="flex items-center gap-2">
-                  <input
-                    type="date"
-                    v-model="startDate"
-                    class="h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
-                  />
-                  <span class="text-gray-500">to</span>
-                  <input
-                    type="date"
-                    v-model="endDate"
-                    class="h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
-                  />
-                  
-                  </div>
-                  
-                </div>
+  <!-- Assigned To -->
+  <label
+    for="assigned-to"
+    class="block text-sm font-medium text-gray-700 mt-5"
+    style="font-family: Inter, sans-serif;"
+  >
+    Assigned To
+  </label>
+  <input
+    id="assigned-to"
+    type="email"
+    v-model="assignedTo"
+    placeholder="Enter an email"
+    class="w-full h-7 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+  />
+</div>
+
+<!-- Date Section -->
+<div class="mt-2">
+  <label
+    class="block text-sm font-medium text-gray-700 mb-1"
+    style="font-family: Inter, sans-serif;"
+  >
+    Date
+  </label>
+
+  <!-- Flex row: date picker and button -->
+  <div class="flex items-center space-x-4">
+    <el-date-picker
+      v-model="value1"
+      type="datetimerange"
+      range-separator="To"
+      start-placeholder="Start date"
+      end-placeholder="End date"
+      class="w-full"
+    />
+    
+    <div class="flex flex-nowrap items-center space-x-2 mt-3">
+  <input
+    id="all-day"
+    type="checkbox"
+    v-model="allDay"
+    class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+  />
+  <label
+    for="all-day"
+    class="text-sm text-gray-700 whitespace-nowrap"
+    style="font-family: Inter, sans-serif;"
+  >
+    All Day
+  </label>
+</div>
+
+
+    <button
+      class=" transition mt-3"
+    >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.26806 9.7501C5.26681 8.86096 5.44148 7.98035 5.78202 7.15901C6.12256 6.33766 6.62223 5.5918 7.25226 4.96438C7.88228 4.33697 8.63022 3.84041 9.45297 3.50329C10.2757 3.16617 11.1571 2.99516 12.0462 3.0001C15.7587 3.02823 18.7306 6.1126 18.7306 9.83448V10.5001C18.7306 13.8564 19.4337 15.8064 20.0524 16.8751C20.1182 16.9889 20.1528 17.118 20.1529 17.2494C20.153 17.3809 20.1186 17.51 20.0531 17.624C19.9876 17.7379 19.8933 17.8326 19.7796 17.8986C19.666 17.9647 19.537 17.9996 19.4056 18.0001H4.59306C4.46163 17.9996 4.33263 17.9647 4.21899 17.8986C4.10534 17.8326 4.01104 17.7379 3.94552 17.624C3.88001 17.51 3.84559 17.3809 3.8457 17.2494C3.84582 17.118 3.88047 16.9889 3.94619 16.8751C4.56494 15.8064 5.26806 13.8564 5.26806 10.5001V9.7501Z" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 18V18.75C9 19.5456 9.31607 20.3087 9.87868 20.8713C10.4413 21.4339 11.2044 21.75 12 21.75C12.7956 21.75 13.5587 21.4339 14.1213 20.8713C14.6839 20.3087 15 19.5456 15 18.75V18" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+    </button
+       >
+
+     <button
+      class=" transition mt-3"
+      >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.75 8.25L21 6L18.75 3.75" stroke="#616161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 12C3.00248 10.4095 3.63542 8.88478 4.7601 7.7601C5.88478 6.63542 7.40946 6.00248 9 6H21" stroke="#616161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5.25 15.75L3 18L5.25 20.25" stroke="#616161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 12C20.9975 13.5905 20.3646 15.1152 19.2399 16.2399C18.1152 17.3646 16.5905 17.9975 15 18H3" stroke="#616161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+    </button>
+  </div>
+</div>
+
+
                 <div class="flex flex-row gap-4 mt-5">
                   <div class="flex flex-col flex-1">
                     <label
