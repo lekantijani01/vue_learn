@@ -2,6 +2,7 @@
 
 import Navbar from './components/Navbar.vue';
 import hero from './components/hero.vue';
+import sidenav from './components/sidenav.vue';
 
 
 </script>
@@ -9,5 +10,6 @@ import hero from './components/hero.vue';
 <template>
     <Navbar />
     <hero />
+    
      
 </template>
