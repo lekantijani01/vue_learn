@@ -39,6 +39,7 @@ function handleSubmit() {
   group.value = ""
   allDay.value = false
 }
+console.log('value')
 
 const handleCreate = () => {
   console.log("Create button clicked");
