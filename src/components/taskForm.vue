@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
 import { ElDatePicker } from "element-plus";
-import { useTaskStore } from "@/stores/taskStore"
+import { useTaskStore } from "../../store/taskStore"
 defineProps<{
  showPopUp: boolean,
   showTaskPopupFn: (value: boolean) => void
 }>()
-
 const taskTitle = ref("");
 const assignedTo = ref("");
 const startDate = ref("");
@@ -14,6 +13,7 @@ const endDate = ref("");
 const priority = ref("");
 const group = ref("");
 const value1 = ref("");
+const description = ref("");
 const allDay = ref(false);
 const taskStore = useTaskStore()
 
@@ -117,7 +117,7 @@ const handleCancel = () => {
                   New Task
                 </div>
                 <form
-                            @submit.prevent="handleCreate"
+                            @submit.prevent="handleSubmit"
                             @reset.prevent="handleCancel"
                           >
                 <section
@@ -619,9 +619,11 @@ const handleCancel = () => {
 
                           <!-- Editor -->
                           
-                            <div
-                              class="min-h-[130px] bg-gray-50 border border-t-0 border-gray-300 p-3 text-sm focus:outline-none"
-                            ></div>
+                            <textarea
+                              v-model="description"
+                              class="min-h-[130px] w-full bg-gray-50 border border-t-0 border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                              placeholder="Enter task description here..."
+                            ></textarea>
                             <div class="flex justify-start space-x-2 mt-4">
                               <button
                                 type="reset"
