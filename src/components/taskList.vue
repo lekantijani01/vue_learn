@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from "vue";
+import { useTaskStore } from "@/stores/taskStore"
 const search = ref("");
+
+const taskStore = useTaskStore()
 </script>
 
 <template>
@@ -45,6 +48,15 @@ const search = ref("");
           </svg>
           <span>Search words: {{ search }}</span>
         </template>
+        <div>
+    <h2 class="font-bold text-lg">Task List</h2>
+    <ul v-if="taskStore.tasks.length">
+      <li v-for="(task, index) in taskStore.tasks" :key="index" class="mb-2">
+        <strong>{{ task.title }}</strong> - {{ task.priority }} priority
+      </li>
+    </ul>
+    <p v-else>No tasks yet.</p>
+  </div>
       </div>
     </div>
 </template>

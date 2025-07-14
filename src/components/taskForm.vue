@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
 import { ElDatePicker } from "element-plus";
+import { useTaskStore } from "@/stores/taskStore"
 defineProps<{
  showPopUp: boolean,
   showTaskPopupFn: (value: boolean) => void
@@ -14,6 +15,30 @@ const priority = ref("");
 const group = ref("");
 const value1 = ref("");
 const allDay = ref(false);
+const taskStore = useTaskStore()
+
+function handleSubmit() {
+  const newTask = {
+    title: taskTitle.value,
+    assignedTo: assignedTo.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
+    priority: priority.value,
+    group: group.value,
+    allDay: allDay.value
+  }
+
+  taskStore.addTask(newTask)
+
+  // Clear form
+  taskTitle.value = ""
+  assignedTo.value = ""
+  startDate.value = ""
+  endDate.value = ""
+  priority.value = ""
+  group.value = ""
+  allDay.value = false
+}
 
 const handleCreate = () => {
   console.log("Create button clicked");
@@ -91,6 +116,10 @@ const handleCancel = () => {
                 >
                   New Task
                 </div>
+                <form
+                            @submit.prevent="handleCreate"
+                            @reset.prevent="handleCancel"
+                          >
                 <section
                   class="mt-10"
                   style="
@@ -589,10 +618,7 @@ const handleCancel = () => {
                           </div>
 
                           <!-- Editor -->
-                          <form
-                            @submit.prevent="handleCreate"
-                            @reset.prevent="handleCancel"
-                          >
+                          
                             <div
                               class="min-h-[130px] bg-gray-50 border border-t-0 border-gray-300 p-3 text-sm focus:outline-none"
                             ></div>
@@ -610,7 +636,7 @@ const handleCancel = () => {
                                 Create
                               </button>
                             </div>
-                          </form>
+                          
                         </div>
                       </div>
                     </div>
@@ -817,6 +843,7 @@ const handleCancel = () => {
                     </div>
                   </div>
                 </section>
+              </form>
               </div>
             </div>
           </div>
