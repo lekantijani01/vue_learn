@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import sidenav from "./sidenav.vue";
-import TaskActions from "./TaskActions.vue";
+import taskActions from "./taskActions.vue";
 import taskList from "./taskList.vue";
 import taskDetails from "./taskDetails.vue";
 
