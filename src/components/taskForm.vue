@@ -12,8 +12,11 @@ const startDate = ref("");
 const endDate = ref("");
 const priority = ref("");
 const group = ref("");
-const value1 = ref("");
 const description = ref("");
+const dateValue = ref<[Date, Date]>([
+  new Date(),
+  new Date(),
+])
 const allDay = ref(false);
 const taskStore = useTaskStore()
 
@@ -21,11 +24,12 @@ function handleSubmit() {
   const newTask = {
     title: taskTitle.value,
     assignedTo: assignedTo.value,
-    startDate: startDate.value,
-    endDate: endDate.value,
+    startDate: dateValue.value[0],
+    endDate: dateValue.value[1],
     priority: priority.value,
     group: group.value,
-    allDay: allDay.value
+    allDay: allDay.value,
+    description: description.value
   }
 
   taskStore.addTask(newTask)
@@ -41,14 +45,18 @@ function handleSubmit() {
 }
 console.log('value')
 
-const handleCreate = () => {
-  console.log("Create button clicked");
-  
-};
 const handleCancel = () => {
   console.log("Cancel button clicked");
 };
 
+function formatDate(dateStr) {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "long",
+    day: "numeric"
+  })
+}
 </script>
 
 <template>
@@ -197,7 +205,7 @@ const handleCancel = () => {
                           <!-- Flex row: date picker and button -->
                           <div class="flex items-center space-x-4">
                             <el-date-picker
-                              v-model="value1"
+                              v-model="dateValue"
                               type="datetimerange"
                               range-separator="To"
                               start-placeholder="Start date"
@@ -322,9 +330,9 @@ const handleCancel = () => {
                               class="h-9 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             >
                               <option value="" disabled>Select group</option>
-                              <option value="">Lopworks</option>
-                              <option value=""></option>
-                              <option value=""></option>
+                              <option value="Lopworks">Lopworks</option>
+                              <option value="ikeja">ikeja</option>
+                              <option value="lagos">lagos</option>
                               <option value=""></option>
                               <option value=""></option>
                             </select>
@@ -659,7 +667,7 @@ const handleCancel = () => {
                       <div class="max-w-md w-full space-y-2">
                         <!-- Heading -->
                         <h2 class="text-xl font-semibold text-gray-900">
-                          Meeting
+                          {{ taskTitle }}
                         </h2>
 
                         <!-- Detail Box -->
@@ -679,7 +687,7 @@ const handleCancel = () => {
                                 />
                               </svg>
                             </span>
-                            <p class="text-gray-800">Due Wed, April 9th</p>
+                            <p class="text-gray-800">Due {{ formatDate(dateValue[1]) }}</p>
                           </div>
 
                           <div class="flex items-start gap-3">
@@ -707,7 +715,7 @@ const handleCancel = () => {
                                 />
                               </svg>
                             </span>
-                            <p class="text-gray-800">Lopworks</p>
+                            <p class="text-gray-800">{{group}}</p>
                           </div>
 
                           <div class="flex items-start gap-3">
@@ -735,7 +743,7 @@ const handleCancel = () => {
                                 />
                               </svg>
                             </span>
-                            <p class="text-gray-800">Medium</p>
+                            <p class="text-gray-800">{{priority}}</p>
                           </div>
 
                           <div class="flex items-start gap-3">
@@ -837,8 +845,7 @@ const handleCancel = () => {
                               </svg>
                             </span>
                             <p class="text-gray-800">
-                              Deadline for submitting the Q1 financial report.
-                              Ensure all data is finalized.
+                              {{description}}
                             </p>
                           </div>
                         </div>

@@ -8,6 +8,14 @@ const taskStore = useTaskStore();
 function openTask(task) {
   taskStore.selectTask(task);
 }
+function formatDate(dateStr) {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "long",
+    day: "numeric"
+  })
+}
 </script>
 
 <template>
@@ -48,44 +56,61 @@ function openTask(task) {
     </div>
 
     <!-- Task List -->
-    <div class="px-4">
-      <h2 class="font-bold text-lg mb-4">Task List</h2>
+    <div class="">
+    <h2 class="font-bold text-lg">Task List</h2>
 
-      <ul v-if="taskStore.tasks.length">
-        <li
-          v-for="task in taskStore.tasks.filter(t => t.title.toLowerCase().includes(search.toLowerCase()))"
-          :key="task.id"
-          class="mb-4 p-4 border rounded-md"
-        >
-          <!-- Date Range -->
-          <div class="text-xs text-gray-500">
-            {{ task.startDate }} → {{ task.endDate }}
-          </div>
-
-          <!-- Title -->
-          <div class="text-md font-semibold">{{ task.title }}</div>
-
-          <!-- Priority -->
-          <div class="text-sm text-gray-600">{{ task.priority }}</div>
-
-          <!-- Circle Checkmark Button -->
+    <ul v-if="taskStore.tasks.length">
+      <li
+        v-for="task in taskStore.tasks.filter(t => t.title.toLowerCase().includes(search.toLowerCase()))"
+        :key="task.id"
+        class="flex items-start p-4 mb-4 shadow-sm"
+      >
+        <!-- Checkbox -->
+        <div class="mr-3 mt-1">
           <button
+            class="w-5 h-5 border border-gray-300 rounded-full bg-white flex items-center justify-center focus:outline-none"
             @click="openTask(task)"
-            class="mt-2 w-8 h-8 flex items-center justify-center bg-blue-100 hover:bg-blue-200 rounded-full"
-            title="Open Task"
+            aria-label="Open Task"
+            type="button"
           >
+          </button>
+        </div>
+
+        <!-- Task Details -->
+        <div class="flex-1">
+          <!-- Date -->
+          <div class="flex items-center text-sm text-blue-600 mb-1">
             <svg
-              class="w-4 h-4 text-blue-600"
+              class="w-4 h-4 mr-1"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 7V3m8 4V3m-9 8h10m-12 8h14a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
             </svg>
-          </button>
-        </li>
-      </ul>
+            {{ formatDate(task.startDate) }}
+          </div>
+
+          <!-- Title -->
+          <div class="text-base font-semibold text-black">
+            {{ task.title }}
+          </div>
+
+          <!-- Subtitle -->
+          <div class="text-sm text-gray-500 truncate">
+            {{ task.description  }}
+          </div>
+        </div>
+
+        <!-- Circle Checkmark Button -->
+        
+      </li>
+    </ul>
 
       <p v-else>No tasks yet.</p>
     </div>

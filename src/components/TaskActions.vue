@@ -4,11 +4,6 @@ import taskForm from "./taskForm.vue";
 let showNewTaskPopup = ref(false);
 
 
-const value1 =
-  ref <
-  [Date, Date] >
-  [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)];
-
 const showTaskPopup = (value) => {
     console.log("showTaskPopup called with value:", value);
   showNewTaskPopup.value = value;
